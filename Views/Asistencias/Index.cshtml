@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Tesis.Models.Cursos>
+
+@{
+    ViewData["Title"] = "Asistencias";
+    var fechaHoy = DateTime.Now.ToString("dd/MM/yyyy"); // Fecha actual
+}
+
+<div class="container mt-3">
+    <div class="row">
+        <!-- Columna Izquierda: Selección de Cursos -->
+        <div class="col-md-4">
+            <h4>Seleccionar un curso</h4>
+            <h6>Fecha: @fechaHoy</h6>
+
+            @foreach (var curso in Model)
+            {
+                <div class="mb-2">
+                    <a asp-action="EstudiantesPorCurso" asp-route-id="@curso.Id" class="btn btn-primary btn-lg px-3">
+                        @curso.Nombre
+                    </a>
+                </div>
+            }
+        </div>
+
+        <!-- Columna Derecha: Informe Diario -->
+        <div class="col-md-8">
+            <h4>Informe Diario</h4>
+
+            @foreach (var curso in Model)
+            {
+                var estudiantesAusentes = curso.Estudiantes
+                .Where(e => e.Asistencias.Any(a => a.Fecha.Date == DateTime.Today && !a.Presente)) // Filtra faltas de hoy
+                .ToList();
+
+                <!-- Título con el nombre del curso -->
+                <h3 class="mt-4">@curso.Nombre</h3>
+                <h5 class="text-danger">Ausentes</h5> <!-- Subtítulo en rojo -->
+                if (estudiantesAusentes.Any())
+                {
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Apellido</th>
+                                        <th>Faltas Consecutivas</th>
+                                        <th>Faltas Totales</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var estudiante in estudiantesAusentes)
+                                    {
+                                        <tr>
+                                            <td>@estudiante.Nombre</td>
+                                            <td>@estudiante.Apellido</td>
+                                            <td></td>
+                                            <td>@estudiante.Asistencias.Count(a => !a.Presente)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">No hay estudiantes ausentes en @curso.Nombre.</p>
+                }
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,63 @@
+﻿@model Tesis.Models.Cursos
+
+@{
+    ViewData["Title"] = "ListaEstudiantes";
+}
+
+<h2>Estudiantes de: @Model.Nombre</h2>
+<div class="mb-3">
+    <a asp-action="ExportarEstudiantes" asp-route-id="@Model.Id" class="btn btn-success rounded-pill px-3">
+        Exportar a Excel
+    </a>
+</div>
+
+@if (Model.Estudiantes != null && Model.Estudiantes.Any())
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>DNI</th>
+                <th>Legajo</th>
+                <th>Mail</th>
+                <th>Dirección</th>
+                <th>Altura</th>
+                <th>Padre</th>
+                <th>Tel padre</th>
+                <th>Madre</th>
+                <th>Tel madre</th>
+                <th>Tutor</th>
+                <th>Tel tutor</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var estudiante in Model.Estudiantes)
+            {
+                <tr>
+                    <td>@estudiante.Nombre</td>
+                    <td>@estudiante.Apellido</td>
+                    <td>@estudiante.DNI</td>
+                    <td>@estudiante.Legajo</td>
+                    <td>@estudiante.Email</td>
+                    <td>@estudiante.Direccion</td>
+                    <td>@estudiante.Numero</td>
+                    <td>@estudiante.NombrePadre</td>
+                    <td>@estudiante.TelefonoPadre</td>
+                    <td>@estudiante.NombreMadre</td>
+                    <td>@estudiante.TelefonoMadre</td>
+                    <td>@estudiante.NombreTutor</td>
+                    <td>@estudiante.TelefonoTutor</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No hay estudiantes en este curso.</p>
+}
+
+<div class="d-flex justify-content-lg-between gap-2 mt-3">
+    <a asp-action="Index" class="btn btn-secondary w-auto px-4">Volver</a>
+</div>

@@ -1,0 +1,107 @@
+﻿@model IEnumerable<Tesis.Models.Estudiantes>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Estudiantes</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary rounded-pill px-3">Agregar nuevo estudiante</a>
+</p>
+
+<div class="d-flex justify-content-lg-between">
+    <form asp-action="Index" method="get" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="searchString" class="form-control" placeholder="Nombre, apellido o curso"
+                   value="@Context.Request.Query["searchString"]" maxlength="20" style="max-width: 250px;">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+            <a asp-action="Index" class="btn btn-secondary">Limpiar</a>
+        </div>
+    </form>
+
+    <form asp-action="ImportarEstudiantes" asp-controller="Estudiantes" method="post" enctype="multipart/form-data">
+        <div class="input-group">
+            <input type="file" name="archivoExcel" class="form-control" accept=".xlsx,.xls" required>
+            <button type="submit" class="btn btn-success">Importar Excel</button>
+            <div class="ms-3">
+                <button type="button" class="btn btn-secondary rounded-circle" data-bs-toggle="tooltip" data-bs-placement="right"
+                        title="Orden: Nombre*, Apellido*, DNI*, Legajo*, Email, Dirección, Altura, Teléfono, Nombre Padre, Tel. Padre, Nombre Madre, Tel. Madre, Nombre Tutor, Tel. Tutor, Curso (formato: 1° AÑO). -- ''*'' campo obligatorio." >
+                    !
+                </button>
+            </div>      
+        </div>
+    </form>  
+</div>
+
+<!-- Botón de selección y eliminación -->
+<div class="d-flex justify-content-between mb-3">
+    <button id="selectAll" class="btn btn-info">Seleccionar Todo</button>
+    <button id="deleteSelected" class="btn btn-danger">Eliminar Seleccionados</button>
+</div>
+
+<form id="deleteForm" asp-action="EliminarSeleccionados" method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <input type="checkbox" id="selectAllCheckbox">
+                </th>
+                <th>@Html.DisplayNameFor(model => model.Nombre)</th>
+                <th>@Html.DisplayNameFor(model => model.Apellido)</th>
+                <th>@Html.DisplayNameFor(model => model.Curso)</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" name="selectedEstudiantes" value="@item.Id" class="studentCheckbox">
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Apellido)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Curso.Nombre)</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success rounded-pill px-3">Editar</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-warning rounded-pill px-3">Detalles</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger rounded-pill px-3">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>
+
+@section Scripts {
+    <script>
+        // Seleccionar todos los checkboxes
+        document.getElementById("selectAll").addEventListener("click", function () {
+            let checkboxes = document.querySelectorAll(".studentCheckbox");
+            let allChecked = [...checkboxes].every(ch => ch.checked);
+            checkboxes.forEach(ch => ch.checked = !allChecked);
+        });
+
+        // Eliminar seleccionados
+        document.getElementById("deleteSelected").addEventListener("click", function () {
+            if (confirm("¿Seguro que deseas eliminar los estudiantes seleccionados?")) {
+                document.getElementById("deleteForm").submit();
+            }
+        });
+
+        // Checkbox de seleccionar todos
+        document.getElementById("selectAllCheckbox").addEventListener("change", function () {
+            let checkboxes = document.querySelectorAll(".studentCheckbox");
+            checkboxes.forEach(ch => ch.checked = this.checked);
+        });
+
+        // Activar tooltips de Bootstrap
+        document.addEventListener("DOMContentLoaded", function () {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
+    }

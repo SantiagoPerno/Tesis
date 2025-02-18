@@ -1,0 +1,44 @@
+﻿@model Tesis.Models.Cursos
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Estudiantes de: @Model.Nombre</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Estudiante</th>
+            <th>Faltas</th>
+            <th colspan="5" class="text-center">Ficha médica</th> <!-- Se agrupan las 5 columnas -->
+        </tr>
+        <tr>
+            <th></th> <!-- Espacio para Estudiante -->
+            <th></th> <!-- Espacio para Faltas -->
+            <th>Título 1</th>
+            <th>Título 2</th>
+            <th>Título 3</th>
+            <th>Título 4</th>
+            <th>Título 5</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var estudiante in Model.Estudiantes)
+        {
+            <tr>
+                <td>@estudiante.Nombre @estudiante.Apellido</td>
+                <td>@estudiante.TotalFaltas</td>
+                <td><input type="checkbox" name="titulo1[@estudiante.Id]" /></td>
+                <td><input type="checkbox" name="titulo2[@estudiante.Id]" /></td>
+                <td><input type="checkbox" name="titulo3[@estudiante.Id]" /></td>
+                <td><input type="checkbox" name="titulo4[@estudiante.Id]" /></td>
+                <td><input type="checkbox" name="titulo5[@estudiante.Id]" /></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="d-flex justify-content-lg-between gap-2 mt-3">
+    <a asp-action="Index" class="btn btn-secondary w-auto px-4">Volver</a>
+</div>

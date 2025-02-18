@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Tesis.ViewModels.EstudianteAsistenciaViewModel>
+
+@{
+    ViewData["Title"] = "Estudiantes por Curso";
+}
+
+<h1>Estudiantes del Curso: @ViewBag.CursoNombre</h1>
+<h6>Fecha: @DateTime.Now.ToString("dd/MM/yyyy")</h6>
+
+<!-- Formulario para guardar todas las asistencias -->
+<form asp-action="GuardarAsistencias" method="post">
+    <input type="hidden" name="Fecha" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre del Estudiante</th>
+                <th>Presente</th>
+                <th>Asistencias</th>
+                <th>Faltas</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Count(); i++)
+            {
+                var estudiante = Model.ElementAt(i);
+                <tr>
+                    <td>
+                        @estudiante.Nombre
+                        <input type="hidden" name="Asistencias[@i].Id" value="@estudiante.Id" />
+                    </td>
+
+                    <td>
+                        <input type="checkbox" name="Asistencias[@i].Presente" value="true" class="form-check-input"
+                        @(estudiante.Presente ? "checked" : "") />
+                        <input type="hidden" name="Asistencias[@i].Id" value="@estudiante.Id" />
+                    </td>
+
+                    <td>@estudiante.TotalAsistencias</td>
+                    <td>@estudiante.TotalInasistencias</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-start gap-3 mt-3">
+        <button type="submit" class="btn btn-primary px-4">Guardar</button>
+        <a asp-action="Index" class="btn btn-secondary px-4">Volver</a>
+    </div>
+</form>
